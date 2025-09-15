@@ -206,7 +206,7 @@ class UnifiedApp:
                 sys.executable, "-m", "streamlit", "run", 
                 "streamlit_app.py",
                 "--server.port", str(self.streamlit_port),
-                "--server.address", "127.0.0.1",
+                "--server.address", "0.0.0.0",
                 "--server.headless", "true",
                 "--browser.gatherUsageStats", "false"
             ], env=env)
@@ -265,14 +265,20 @@ async def shutdown_event():
     unified_manager.stop_streamlit()
 
 @app.get("/")
-async def root():
+async def root(request: Request):
     """Redirect root to Streamlit frontend"""
-    return RedirectResponse(url=f"http://127.0.0.1:{unified_manager.streamlit_port}")
+    # Use the request host to construct the redirect URL
+    host = request.headers.get("host", "127.0.0.1:8080").split(":")[0]
+    return RedirectResponse(url=f"http://{host}:{unified_manager.streamlit_port}")
 
 @app.get("/health")
-async def health_check():
+async def health_check(request: Request):
     """Health check for the unified service"""
     streamlit_healthy = unified_manager.streamlit_process and unified_manager.streamlit_process.poll() is None
+    
+    # Use the request host to construct dynamic URLs
+    host = request.headers.get("host", "127.0.0.1:8080").split(":")[0]
+    port = unified_manager.port
     
     return {
         "status": "healthy" if streamlit_healthy else "degraded",
@@ -280,14 +286,16 @@ async def health_check():
             "backend": "healthy",
             "frontend": "healthy" if streamlit_healthy else "offline"
         },
-        "frontend_url": f"http://127.0.0.1:{unified_manager.streamlit_port}",
-        "backend_url": f"http://127.0.0.1:{unified_manager.port}/api"
+        "frontend_url": f"http://{host}:{unified_manager.streamlit_port}",
+        "backend_url": f"http://{host}:{port}/api"
     }
 
 @app.get("/frontend")
-async def frontend_proxy():
+async def frontend_proxy(request: Request):
     """Proxy to Streamlit frontend"""
-    return RedirectResponse(url=f"http://127.0.0.1:{unified_manager.streamlit_port}")
+    # Use the request host to construct the redirect URL
+    host = request.headers.get("host", "127.0.0.1:8080").split(":")[0]
+    return RedirectResponse(url=f"http://{host}:{unified_manager.streamlit_port}")
 
 def main():
     """Start the unified application"""
