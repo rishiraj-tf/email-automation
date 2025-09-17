@@ -17,9 +17,9 @@ class PipelineConfig:
     reasoning_model: str = "openai-main/gpt-5"
     
     # Processing Configuration
-    chunk_size: int = 10  # Number of prospects to process at once
+    chunk_size: int = 5  # Number of prospects to process at once
     max_retries: int = 3
-    timeout_seconds: int = 300
+    timeout_seconds: int = 300  # Timeout for individual LLM API calls in seconds
     
     # Output Configuration
     output_dir: str = "output"
@@ -113,4 +113,7 @@ Key guidelines:
 3. Ask thoughtful, specific questions that demonstrate understanding
 4. Keep emails concise but highly relevant
 5. Include specific technical capabilities that match their needs
-6. Generate both Message #1 (introduction) and Message #2 (follow-up)"""
+6. Generate both Message #1 (introduction) and Message #2 (follow-up)
+
+Remember to dumb down the language so that the user doesn't get overwhelmed by the technical prowess. Write a humanized email with technical contents being dumb down and the tone should be helpful
+"""

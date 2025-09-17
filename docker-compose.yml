@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # Main Email Automation Application
+  email-automation:
+    build:
+      context: .
+      dockerfile: Dockerfile.truefoundry
+    container_name: truefoundry-email-automation
+    ports:
+      - "8080:8080"  # Main application port
+      - "8501:8501"  # Streamlit frontend port
+    environment:
+      # TrueFoundry API Configuration
+      - TFY_API_KEY=${TFY_API_KEY:-eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtWMlZwX3lsQXFudGwwT0hQWVRoUVk3VTFPUSJ9.eyJhdWQiOiI3NDY2NzkyZC02NTZmLTNhMzAtMzAzOS02MTMwMzQzODMxMzYiLCJleHAiOjM3MTcxNDE4NzEsImlhdCI6MTc1NzU4OTg3MSwiaXNzIjoidHJ1ZWZvdW5kcnkuY29tIiwic3ViIjoiY21mZmJtb2M0OGF2YTAxcGlmaWZvZG1yciIsImp0aSI6IjAxY2U4NDZkLTY3MWEtNDY3MC04YjQwLWZlM2RjYzViZjRhMiIsInN1YmplY3RTbHVnIjoiZGVmYXVsdC1jbWV4Mm9hdHMzdDM0MDFwcmMwenFjdDN5IiwidXNlcm5hbWUiOiJkZWZhdWx0LWNtZXgyb2F0czN0MzQwMXByYzB6cWN0M3kiLCJ1c2VyVHlwZSI6InNlcnZpY2VhY2NvdW50Iiwic3ViamVjdFR5cGUiOiJzZXJ2aWNlYWNjb3VudCIsInRlbmFudE5hbWUiOiJ0ZnktZW8iLCJyb2xlcyI6W10sImFwcGxpY2F0aW9uSWQiOiI3NDY2NzkyZC02NTZmLTNhMzAtMzAzOS02MTMwMzQzODMxMzYifQ.roiPG72r_PI-R_yLmIP6qGDawJYy9-Hl5_RNTgbb4u5vnOnpWKs6F4L84AifiRP3xHk670OquOnmP2YYXewq_b8gwfGkJbFu9EAK9QhsdtTfJD838AoKYfGVTvUyA22InEv4rV46H-uVEZ7IQmhH4Y8oL5H0nMH44OmJxOhaz0pip3i4neEct_rrS3YrvTUTs9GRgaf4cjaiCx6-Xu3f0U5irFkrduntUzPOZT7lITxeoYsnOqEtuiP8QBASNt_NYykRMykQXeUvOkwdQIdXasClKxU0EY32QAh3FvrT3W4Zpl9wPeo4f0Nav9SC8t_wtGfmUNQDhS6gSPul-G_lng}
+      - TFY_BASE_URL=${TFY_BASE_URL:-https://llm-gateway.truefoundry.com}
+      - TFY_REASONING_MODEL=${TFY_REASONING_MODEL:-openai-main/gpt-5}
+      
+      # Processing Configuration
+      - CHUNK_SIZE=${CHUNK_SIZE:-5}
+      - MAX_RETRIES=${MAX_RETRIES:-3}
+      - TIMEOUT_SECONDS=${TIMEOUT_SECONDS:-300}
+      
+      # Output Configuration
+      - OUTPUT_DIR=${OUTPUT_DIR:-output}
+      
+      # Logging Configuration
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ENABLE_TFY_LOGGING=${ENABLE_TFY_LOGGING:-true}
+      
+      # Streamlit Configuration
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_ENABLE_CORS=false
+      - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=false
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+    volumes:
+      # Persist output files
+      - ./output:/app/output:rw
+      # Mount sample data (optional)
+      - ./sample_prospects.csv:/app/sample_prospects.csv:ro
+      # Mount any additional CSV files
+      - ./*.csv:/app/data/:ro
+    networks:
+      - email-automation-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - "com.docker.compose.project=truefoundry-email-automation"
+      - "service=email-automation"
+
+  # Optional: Redis for session management and caching
+  # Uncomment if you want to add Redis for better performance
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: email-automation-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis-data:/data
+  #   networks:
+  #     - email-automation-network
+  #   restart: unless-stopped
+  #   command: redis-server --appendonly yes
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+networks:
+  email-automation-network:
+    driver: bridge
+    name: email-automation-network
+
+volumes:
+  # Uncomment if using Redis
+  # redis-data:
+  #   driver: local
+  output-data:
+    driver: local

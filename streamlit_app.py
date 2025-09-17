@@ -119,10 +119,20 @@ def main():
         )
         
         # Clear cache button for troubleshooting
-        if st.button("🧹 Clear Cache & Reset", help="Clear any cached errors or data"):
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.rerun()
+        col_clear1, col_clear2 = st.columns(2)
+        with col_clear1:
+            if st.button("🧹 Clear Cache & Reset", help="Clear any cached errors or data"):
+                for key in list(st.session_state.keys()):
+                    del st.session_state[key]
+                st.rerun()
+        
+        with col_clear2:
+            if st.button("🗑️ Clear Downloads", help="Clear download results to start fresh"):
+                if 'processing_result' in st.session_state:
+                    del st.session_state.processing_result
+                if 'processing_stats' in st.session_state:
+                    del st.session_state.processing_stats
+                st.rerun()
         
         if uploaded_file is not None:
             # Clear any previous error states
@@ -155,6 +165,10 @@ def main():
                     
             except Exception as e:
                 st.markdown(f'<div class="error-box">❌ Error reading CSV file: {str(e)}</div>', unsafe_allow_html=True)
+    
+    # Display download results if available (persists across page refreshes)
+    if 'processing_result' in st.session_state:
+        display_results()
     
     with col2:
         st.markdown('<h2 class="section-header">📊 Processing Stats</h2>', unsafe_allow_html=True)
@@ -217,6 +231,9 @@ def process_prospects(uploaded_file, df):
             # Success message
             st.markdown('<div class="success-box">🎉 Email automation pipeline completed successfully!</div>', unsafe_allow_html=True)
             
+            # Store results in session state for persistent downloads
+            st.session_state.processing_result = result
+            
             # Display results
             display_results(result)
             
@@ -257,23 +274,37 @@ def process_prospects(uploaded_file, df):
         status_text.empty()
 
 
-def display_results(result):
+def display_results(result=None):
     """Display processing results and download options"""
+    
+    # Use session state result if available and no result passed
+    if result is None and 'processing_result' in st.session_state:
+        result = st.session_state.processing_result
+    
+    if result is None:
+        return
     
     st.markdown('<h2 class="section-header">📥 Download Results</h2>', unsafe_allow_html=True)
     
     # Create download columns
     col1, col2, col3 = st.columns(3)
     
+    # Generate timestamp once for consistent file naming and unique keys
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    # Create unique key suffix to prevent duplicate keys across multiple display_results calls
+    key_suffix = f"_{timestamp}_{id(result)}"
+    
     with col1:
         if 'research_csv' in result:
             st.download_button(
                 label="📊 Download Research CSV",
                 data=result['research_csv'],
-                file_name=f"research_output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                file_name=f"research_output_{timestamp}.csv",
                 mime="text/csv",
                 type="primary",
-                use_container_width=True
+                use_container_width=True,
+                key=f"download_research_csv{key_suffix}"
             )
     
     with col2:
@@ -281,10 +312,11 @@ def display_results(result):
             st.download_button(
                 label="📧 Download Email TXT",
                 data=result['email_txt'],
-                file_name=f"email_output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                file_name=f"email_output_{timestamp}.txt",
                 mime="text/plain",
                 type="primary",
-                use_container_width=True
+                use_container_width=True,
+                key=f"download_email_txt{key_suffix}"
             )
     
     with col3:
@@ -292,10 +324,11 @@ def display_results(result):
             st.download_button(
                 label="📝 Download Research Markdown",
                 data=result['research_md'],
-                file_name=f"research_output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md",
+                file_name=f"research_output_{timestamp}.md",
                 mime="text/markdown",
                 type="secondary",
-                use_container_width=True
+                use_container_width=True,
+                key=f"download_research_md{key_suffix}"
             )
     
     # Display summary

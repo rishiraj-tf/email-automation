@@ -1,0 +1,528 @@
+============================================================
+EMAIL 1: Don Federico at Toyota North America
+============================================================
+
+SUBJECT: line
+
+MESSAGE #1:
+----------------------------------------
+Hi Don — saw your senior leadership role at Toyota North America and wanted to share something practical we’re doing with other large manufacturers.
+
+Teams are building great models, but deployments across plants and corporate can look different, and GPU/DB costs creep up. TrueFoundry gives you one simple control panel for AI/ML across on‑prem and cloud, without changing your current tools.
+
+What this looks like:
+- One place to deploy and monitor all models (vision, forecasting, NLP) with canary/shadow rollouts (safe, small % releases)
+- Cost visibility by team/model with budgets and alerts to control GPU spend
+- Move prototypes to production fast with model CI/CD and built‑in observability
+- Works with your Git repos, containers, Kubernetes, data lake/warehouse—no rip‑and‑replace
+- Hybrid support: factory edge/on‑site GPUs plus cloud burst when needed
+
+A Fortune 100 manufacturer used this to standardize 40+ models across 6 plants, cut time-to-production from ~8 weeks to <2, and reduced GPU costs ~25%.
+
+How are you handling plant vs corporate rollouts today? Do you have a single view of spend per model/team? Is hybrid on‑prem + cloud a requirement?
+
+Worth 20 minutes next week to explore a pilot on one plant use case?
+
+3)
+
+MESSAGE #2:
+----------------------------------------
+Hi Don — quick nudge in case my note slipped by.
+
+If useful, we can run a 2‑week pilot:
+- Pick one live use case (e.g., a vision model for quality or a demand/supply model)
+- Plug into your Git + Kubernetes, set cost guardrails
+- Do a small canary across two sites, add latency/cost dashboards
+- Keep everything in your environment
+
+No platform rebuild, just a cleaner way to standardize and control spend. Happy to share a short walkthrough. Are Tue–Thu mornings CT open for a 20‑min chat? If someone else owns ML platform/ops, I’d appreciate a quick intro.
+
+
+Prospect: Mike Sweers (Toyota North America)
+
+1) Subject line
+Get truck ML from notebook to secure service in weeks (with clear telemetry)
+
+2) Message #1
+Hi Mike — given your leadership on Toyota trucks, I’m reaching out with a practical way to move engineering ML (quality, warranty, design assistants) from notebooks to secure, scalable services quickly.
+
+TrueFoundry turns prototypes into production services with:
+- Standard model serving for simulations/analytics with autoscaling
+- Clear telemetry for program reviews: latency, throughput, cost per inference
+- Controlled rollouts (canary/shadow) into manufacturing, service, and connected‑vehicle backends
+- Hybrid setup: keep confidential work on‑prem; burst to cloud for peak training
+
+A global OEM used us to deploy weld/paint inspection models tied to PLM and test benches—cutting deployment time from ~10 weeks to 3 and improving test throughput while tracking cost per model.
+
+A few quick questions:
+- Where do your ML prototypes live today (notebooks, small APIs)?
+- How do you pass models into simulation or hardware‑in‑the‑loop test?
+- Do you track cost per inference today for program gates?
+
+Open to a 20‑minute chat next week?
+
+3) Message #2
+Hi Mike — following up with a light‑weight pilot idea:
+
+- Take one quality model from a truck program
+- Wrap it as a managed API with autoscaling
+- Add a canary into a staging plant/service backend
+- Share a simple dashboard (latency, accuracy proxy, cost per call)
+- Target turnaround: ~10 business days, using your existing Git/Kubernetes
+
+If that’s interesting, I can coordinate with your engineering ops lead. Would Wed or Thu morning work for a quick sync?
+
+
+Prospect: Holly Walters (Toyota North America)
+
+1) Subject line
+CIO control for AI at TMNA: one dashboard, governance, and spend control
+
+2) Message #1
+Hi Holly — as CIO overseeing enterprise tech, cyber, and digital, you likely see AI/ML growing across business units but with uneven governance and rising costs.
+
+TrueFoundry gives TMNA a single control panel for AI:
+- Governance by default: role‑based access (RBAC), approvals, audit trails, and model/version history
+- FinOps for AI: cost allocation per model/team, budgets/alerts, right‑sizing of GPU/infra
+- Faster time‑to‑production (months → weeks) with standard templates and safe rollouts
+- Hybrid/on‑prem + cloud deployments to meet plant and data residency needs
+- Simple UX so data science and app teams can ship safely without heavy platform overhead
+
+A Fortune 100 manufacturer rolled this out to 25+ teams, cut deployment times by >50%, and lowered GPU spend ~30% while improving audit readiness.
+
+Do you have a central model inventory today? Can you see spend by model/team across on‑prem and cloud? Who approves model rollouts into production?
+
+If helpful, I can share a 20‑min walkthrough next week.
+
+3) Message #2
+Hi Holly — quick follow‑up with a practical approach:
+
+30‑day sprint to establish CIO‑level control:
+- Connect to your Git and existing clusters (on‑prem/cloud)
+- Auto‑discover running models, set RBAC and approval workflows
+- Turn on budgets/alerts by team/model; show spend and usage in one view
+- Keep current tools (Kubernetes, data warehouse, MLOps components) intact
+
+No rip‑and‑replace—just a safer, faster, and cheaper path. Would a brief session with your platform/security/FinOps leads be useful? I can share a sample dashboard and rollout plan.
+
+
+Prospect: Shashi Suvarna (Toyota North America)
+
+1) Subject line
+Golden paths for ML at TMNA: governed templates, quotas, and lineage
+
+2) Message #1
+Hi Shashi — for a digital/data/platform leader, the challenge is giving teams a fast lane from experimentation to production without bespoke DevOps each time.
+
+TrueFoundry helps you define “golden paths”:
+- Approved templates and stage gates from notebook → API/batch job
+- Push‑button deploys that hide infra details, yet stay on your Kubernetes
+- Integrations with enterprise data platforms (object storage/warehouse) for features and models
+- Multi‑tenant workspaces with quotas to prevent surprise bills and noisy neighbors
+- Reproducibility and lineage for audit and stakeholder trust
+
+A Tier‑1 supplier used this to enable new models to ship as APIs in <1 day, with built‑in approvals, cost caps, and full lineage.
+
+Quick questions:
+- What’s your current standard template for DS teams?
+- Where do features/models live today (repos, storage, warehouse)?
+- How are approvals and PII reviews enforced today?
+
+Open to a 20‑min chat to sketch a pilot for one workspace?
+
+3) Message #2
+Hi Shashi — circling back with a concrete pilot:
+
+- Connect to your Git and artifact registry
+- Stand up a multi‑tenant workspace with quotas
+- Ship one model via a golden template (dev → staging → prod) with approvals
+- Track cost, usage, and lineage end‑to‑end
+
+This keeps your existing tools and gives teams a safe, fast path. Can we grab 20 minutes next week? Happy to loop in your platform lead.
+
+
+Prospect: Nilesh Pusuluri (Toyota North America)
+
+1) Subject line
+K8s‑native model serving for TMNA—drift, canary, cost per model, less YAML
+
+2) Message #1
+Hi Nilesh — if you’re supporting engineering/AI at Toyota NA, here’s a way to cut toil while keeping control.
+
+TrueFoundry is a Kubernetes‑native control plane for ML:
+- Deploy/scale model services, batch jobs, and fine‑tuning with minimal YAML
+- Built‑in observability: latency, errors, drift alerts, and cost per model
+- Safe promotions: blue/green, canary, and shadow releases
+- Hybrid on‑prem GPU + cloud with the same UX
+- Plugs into your CI and registries—keep current workflows
+
+We’ve helped platform teams standardize rollouts and get “what did this model cost and how did it perform?” in one click.
+
+A few quick checks:
+- Are you on EKS/AKS/GKE or on‑prem K8s?
+- Using KServe/Seldon/Bento today, or custom Flask/FastAPI?
+- How are you doing canary/shadow and tracking drift now?
+
+Open to a short technical walkthrough next week?
+
+3) Message #2
+Hi Nilesh — happy to propose a hands‑on pilot:
+
+- Deploy a sample model on your cluster via TrueFoundry (90‑minute setup)
+- Turn on drift + cost tracking and a canary route
+- Compare side‑by‑side with your current path
+- Wrap with your CI and registry so nothing changes for developers
+
+Usually we can show value in ~2 weeks. Would Wed or Thu afternoon work for a quick screenshare? If someone else owns the ML platform, I’d appreciate an intro.
+
+============================================================
+EMAIL 2: Mike Sweers at Toyota North America
+============================================================
+
+SUBJECT: Your AI initiatives at Toyota North America
+
+MESSAGE #1:
+----------------------------------------
+Hi Mike, I noticed your work in AI/ML at Toyota North America. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.
+
+MESSAGE #2:
+----------------------------------------
+Following up on my previous message - I was reading about Toyota North America's AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?
+
+============================================================
+EMAIL 3: Holly Walters at Toyota North America
+============================================================
+
+SUBJECT: Your AI initiatives at Toyota North America
+
+MESSAGE #1:
+----------------------------------------
+Hi Holly, I noticed your work in AI/ML at Toyota North America. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.
+
+MESSAGE #2:
+----------------------------------------
+Following up on my previous message - I was reading about Toyota North America's AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?
+
+============================================================
+EMAIL 4: Shashi Suvarna at Toyota North America
+============================================================
+
+SUBJECT: Your AI initiatives at Toyota North America
+
+MESSAGE #1:
+----------------------------------------
+Hi Shashi, I noticed your work in AI/ML at Toyota North America. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.
+
+MESSAGE #2:
+----------------------------------------
+Following up on my previous message - I was reading about Toyota North America's AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?
+
+============================================================
+EMAIL 5: Nilesh Pusuluri at Toyota North America
+============================================================
+
+SUBJECT: Your AI initiatives at Toyota North America
+
+MESSAGE #1:
+----------------------------------------
+Hi Nilesh, I noticed your work in AI/ML at Toyota North America. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.
+
+MESSAGE #2:
+----------------------------------------
+Following up on my previous message - I was reading about Toyota North America's AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?
+
+============================================================
+EMAIL 6: Melody Ayeli at Toyota North America
+============================================================
+
+SUBJECT: line
+
+MESSAGE #1:
+----------------------------------------
+Hi Melody,
+
+Leading data governance across multiple TMNA teams (manufacturing, connected, digital) is hard—especially with AI moving fast. TrueFoundry helps centralize ML governance so models ship safely and stay compliant.
+
+How we help:
+- One control plane for model approvals and policy checks across BUs
+- Model registry with lineage, reviewers, and sign-offs tied to Okta/AD
+- PII/PHI and safety checks before deploy (incl. red-team gates)
+- Audit-ready logs for model/data access and decisions
+- Standardized model cards and documentation
+- Drift/bias monitoring with gated rollouts and kill switches
+- Works across on‑prem and AWS/EKS; evidence stored centrally
+- Cost/showback per model/team for accountability
+
+In recent large manufacturing rollouts, risk teams moved from one-off reviews to standard gated releases; audit prep dropped from weeks of manual pulls to a dashboard.
+
+A few quick questions:
+- Are model approvals consistent today or still email/SharePoint?
+- Do you have one place for model cards and lineage across teams?
+- Would audit-ready usage logs across AWS/EKS clusters help?
+
+Open to a 20‑min chat next week to compare notes?
+
+Best,
+[Your Name]
+TrueFoundry
+
+3)
+
+MESSAGE #2:
+----------------------------------------
+(follow-up)
+Hi Melody,
+
+Quick nudge—if helpful, we can pilot “governance-in-a-box” on one non‑prod model:
+- Set approvals, PII checks, and safety gates
+- Auto-generate model cards and lineage
+- Turn on audit-ready logs and drift alerts
+
+Given Toyota Connected NA’s public AWS usage, are your teams on EKS today? If you’re not the right contact, who on the governance or MLOps side would you suggest?
+
+Worth 20 minutes?
+
+Best,
+[Your Name]
+TrueFoundry
+
+
+PROSPECT: Kishore Jonnalagedda — Toyota Motor North America (Data/Platform/ML Engineering)
+
+1) Subject line
+Standardize ML on EKS: golden paths, GPUs, and SLOs for TMNA
+
+2) Message #1
+Hi Kishore,
+
+Noticing your work leading data/ML platforms at TMNA—many teams, many stacks. TrueFoundry gives you a single control plane on Kubernetes/EKS to standardize training and serving without forcing a rip‑and‑replace.
+
+What we bring:
+- Golden-path templates for CI/CD from notebook → service
+- Multi-tenant GPU orchestration, quotas, and fair-share
+- Autoscaling + canary/blue‑green rollouts out of the box
+- Per-model cost/inference metrics and chargeback
+- Central observability: latency, errors, drift with SLOs and auto‑rollback
+- Policy enforcement and secrets management
+- Hybrid/air‑gapped support for plant/on‑prem + AWS
+- Integrates with your tools (e.g., MLflow/Feast/SageMaker, data lake, queues)
+
+With other large manufacturers, platform teams consolidated bespoke pipelines onto one “paved road,” cut ticket load, and made costs/SLOs visible per model and team.
+
+A few questions:
+- Are you running multiple EKS clusters per BU today?
+- How do you manage GPU quotas and idle time?
+- Do you have chargeback per model/service?
+
+Open to a 20‑min walkthrough?
+
+Best,
+[Your Name]
+TrueFoundry
+
+3) Message #2 (follow-up)
+Hi Kishore,
+
+Would a small pilot help? In 10–14 days we can:
+- Stand up one training + serving workflow on EKS with canary
+- Turn on cost per model and GPU utilization
+- Add SLOs with automated rollback on p95 errors/latency
+
+If you’re not the right owner, who on your platform team should I speak with?
+
+Thanks,
+[Your Name]
+TrueFoundry
+
+
+PROSPECT: Amyn Damania — Toyota Motor North America (Engineering/Technology Leader)
+
+1) Subject line
+Ship ML faster at TMNA: dev→prod in days (with guardrails)
+
+2) Message #1
+Hi Amyn,
+
+Engineers want to demo quick and land in prod safely. TrueFoundry helps your teams move POCs to production faster—without losing control.
+
+What this looks like:
+- Self‑serve deploys on AWS/EKS with one‑click promote dev → staging → prod
+- Standardized runtime images and reproducible environments
+- Built‑in A/B tests, traffic splitting, and shadow deploys
+- Unified logs/traces and drift alerts in one place
+- Safe rollbacks and a kill switch if quality drops
+- Cost and capacity planning (GPU/CPU) so teams don’t over‑provision
+- Hooks into your CI/CD and ticketing (e.g., GitHub Actions/Jenkins, Jira/ServiceNow)
+
+In similar enterprise engineering orgs, this “paved road” cut lead time from weeks to days and reduced late‑stage surprises.
+
+Curious:
+- What’s your current lead time from “it works” to “in prod”?
+- Do teams have a standard A/B and rollback pattern today?
+- Where do deploy approvals live—CI, tickets, or both?
+
+Open to a 20‑min chat next week?
+
+Best,
+[Your Name]
+TrueFoundry
+
+3) Message #2 (follow-up)
+Hi Amyn,
+
+Following up—happy to set up a one‑sprint pilot:
+- Pick one service, wire up one‑click promote and traffic split
+- Enable rollback/kill switch and unified logs
+- Show cost per route/model so you catch waste early
+
+If someone else owns ML release engineering, could you point me their way?
+
+Thanks,
+[Your Name]
+TrueFoundry
+
+
+PROSPECT: Brian Kursar — Toyota Motor North America (Senior Technology/Data Executive)
+
+1) Subject line
+One AI delivery standard across TMNA (speed, risk, cost)
+
+2) Message #1
+Hi Brian,
+
+At TMNA scale, AI wins when there’s one way to ship—fast, safe, and cost‑aware—across IT, Manufacturing, Connected, and Digital. TrueFoundry provides a single control plane that shortens time‑to‑production and enforces policy across on‑prem and AWS.
+
+For leaders, we deliver:
+- Paved‑road templates that cut time‑to‑prod from months to weeks
+- Enterprise dashboards: adoption, reliability, and cost‑per‑inference by BU
+- Central policy and compliance gates (approvals, PII checks, safety) before deploy
+- GPU capacity planning and ROI tracking across clusters
+- Chargeback/showback to drive fiscal discipline
+- Coexists with your current data/ML stack—no rip‑and‑replace
+
+In large manufacturers, this gave executives one view of “what models are live, how reliable, at what cost and risk,” while platform teams standardized delivery.
+
+Questions to align:
+- What are your north‑star metrics for AI at TMNA (adoption, reliability, ROI)?
+- Do you have a single pane of glass for prod models across units?
+- Is GPU spend tracked by product/model today?
+
+Open to a 25‑min conversation with your platform/governance leads?
+
+Best,
+[Your Name]
+TrueFoundry
+
+3) Message #2 (follow-up)
+Hi Brian,
+
+If helpful, here’s a crisp 30‑day plan we often run:
+- Week 1: map current ML services and policies; define paved‑road template
+- Weeks 2–3: pilot one critical use case with policy gates and cost/SLO dashboards
+- Week 4: agree rollout playbook + chargeback/showback
+
+Would you like a short exec demo? If there’s a better owner (platform or CISO/gov), happy to follow your lead.
+
+Thanks,
+[Your Name]
+TrueFoundry
+
+
+PROSPECT: Alex Pham — Toyota Motor North America (Platform/Engineering Leader)
+
+1) Subject line
+Squeeze more from GPUs on EKS: batching, canaries, p95 SLAs
+
+2) Message #1
+Hi Alex,
+
+If your teams are juggling spiky traffic and expensive GPUs, TrueFoundry can help you hit latency targets and lower cost without hand‑tuning every service.
+
+Engineers get:
+- GPU‑aware scheduling and autoscaling for training/inference on EKS
+- Multi‑model serving with dynamic batching and optional quantization
+- Canarying and SLO controls (p95/p99 latency, error budgets) with auto‑rollback
+- Offline/online eval harness + shadow deployments before full cutover
+- Secrets/config management and easy hooks to Kafka/Kinesis and your data lake
+- Per‑route analytics: tokens/inference, latency, cost, and autoscaling rules
+
+In similar platform teams, this stabilized p95 under load and reduced idle GPU burn.
+
+A few quick questions:
+- What are you using to serve models today (Triton, TorchServe, SageMaker, custom)?
+- Do you see GPU fragmentation or queue backlogs at peak?
+- Would per‑route token and latency metrics help with scaling rules?
+
+Up for a 20‑min technical walkthrough?
+
+Best,
+[Your Name]
+TrueFoundry
+
+3) Message #2 (follow-up)
+Hi Alex,
+
+Happy to share a quick sample (YAML/CLI) that turns on dynamic batching + canary for one service and shows p95 + cost per route in the same dashboard. We can wire this to your EKS cluster in a short pilot.
+
+If someone else owns inference infra at TMNA, could you loop them in?
+
+Thanks,
+[Your Name]
+TrueFoundry
+
+============================================================
+EMAIL 7: Kishore Jonnalagedda at Toyota North America
+============================================================
+
+SUBJECT: Your AI initiatives at Toyota North America
+
+MESSAGE #1:
+----------------------------------------
+Hi Kishore, I noticed your work in AI/ML at Toyota North America. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.
+
+MESSAGE #2:
+----------------------------------------
+Following up on my previous message - I was reading about Toyota North America's AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?
+
+============================================================
+EMAIL 8: Amyn Damania at Toyota North America
+============================================================
+
+SUBJECT: Your AI initiatives at Toyota North America
+
+MESSAGE #1:
+----------------------------------------
+Hi Amyn, I noticed your work in AI/ML at Toyota North America. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.
+
+MESSAGE #2:
+----------------------------------------
+Following up on my previous message - I was reading about Toyota North America's AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?
+
+============================================================
+EMAIL 9: Brian Kursar at Toyota North America
+============================================================
+
+SUBJECT: Your AI initiatives at Toyota North America
+
+MESSAGE #1:
+----------------------------------------
+Hi Brian, I noticed your work in AI/ML at Toyota North America. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.
+
+MESSAGE #2:
+----------------------------------------
+Following up on my previous message - I was reading about Toyota North America's AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?
+
+============================================================
+EMAIL 10: Alex Pham at Toyota North America
+============================================================
+
+SUBJECT: Your AI initiatives at Toyota North America
+
+MESSAGE #1:
+----------------------------------------
+Hi Alex, I noticed your work in AI/ML at Toyota North America. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.
+
+MESSAGE #2:
+----------------------------------------
+Following up on my previous message - I was reading about Toyota North America's AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?
+

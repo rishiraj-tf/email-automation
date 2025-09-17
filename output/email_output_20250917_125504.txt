@@ -1,0 +1,112 @@
+============================================================
+EMAIL 1: Karl Martin at integrate.ai
+============================================================
+
+SUBJECT: line
+
+MESSAGE #1:
+----------------------------------------
+(introduction)
+Hi Karl,
+
+I’m from TrueFoundry. I’ve followed your shift from Nymi into privacy‑preserving AI at integrate.ai. Your focus on federated learning, differential privacy, and synthetic data lines up with what we help teams run in production.
+
+Where teams like yours often get stuck:
+- Orchestrating training across many customer sites and clouds (without moving data)
+- Proving privacy/compliance with clean, auditable logs
+- Reproducibility across different infra
+- Keeping GPU costs in check as pilots scale
+
+How we help (in plain English):
+- One control plane to run training/serving across on‑prem and any cloud; data stays put
+- Federated rounds with audit logs and per‑site metrics; works with your current FL tooling
+- Track DP budget and lineage per model/dataset; block promotions if a budget would be exceeded
+- Cost guardrails: budgets/alerts per tenant or project (GPU‑hours, cost‑per‑inference)
+- Secure deploys (canary/A‑B/blue‑green), artifact signing, per‑env secrets/RBAC
+- Autoscale GPU pools and spin up short‑lived training clusters to cut idle burn
+- Central experiment tracking and a model registry with policy checks before prod
+
+We built these for privacy‑first teams in regulated spaces and can share examples live.
+
+Quick questions:
+- How are you running federated rounds today—homegrown scripts or a framework?
+- Do you track DP budgets across projects in a way you can show customers?
+- Would per‑tenant GPU/cost reporting help during customer pilots?
+
+Open to a 20‑min chat next week? I can tailor a quick walk‑through to your setup.
+
+Best,
+[Your Name]
+TrueFoundry
+
+3)
+
+MESSAGE #2:
+----------------------------------------
+(follow-up)
+Hi Karl,
+
+A quick mental picture of how teams wire this up on TrueFoundry:
+1) Connect each customer site’s Kubernetes cluster (no data leaves the site).
+2) Define the training job and rounds; we run the schedule, gather metrics/logs; only model updates flow.
+3) DP budget + lineage are logged automatically; models go to a registry; safe rollout with a canary/A‑B switch.
+
+It’s portable across EKS/GKE/AKS and customer‑managed K8s, with role‑based access and artifact signing for audit.
+
+If helpful, we can do a 15‑minute “sanity check” on your current approach (audit trail, DP tracking, or GPU cost) and suggest 1–2 quick wins. If someone else owns MLOps/privacy infra at integrate.ai, who’s the right person?
+
+Thanks,
+[Your Name]
+
+
+Prospect: John Smith at TechCorp AI
+
+1) Subject line
+Who owns MLOps and GPU cost at TechCorp AI?
+
+2) Message #1 (introduction)
+Hi John,
+
+I’m from TrueFoundry. I couldn’t find much public detail on TechCorp AI’s ML stack, so keeping this simple—here are common areas we help ML teams:
+
+- One control plane to run training/serving across clouds and on‑prem (no big rewrites)
+- Cost visibility and guardrails: GPU‑hours and cost‑per‑inference by project/customer, with budgets and alerts
+- Secure, repeatable deployments: templates (canary/A‑B), approvals, artifact signing, and full audit logs
+- Autoscaling GPU pools and short‑lived training clusters to avoid idle spend
+- Experiment tracking + model registry with policy checks before promotion to prod
+
+Three quick questions to see fit:
+- Are models going out weekly or monthly? What slows things down most?
+- Do you need per‑team or per‑customer cost tracking for GPUs and inference?
+- Any compliance/audit needs (SOC2/ISO/HIPAA‑like) for your ML pipelines?
+
+If relevant, open to a 15‑minute chat to compare notes?
+
+Best,
+[Your Name]
+TrueFoundry
+
+3) Message #2 (follow-up)
+Hi John,
+
+Circling back with a small clarification: TrueFoundry sits on top of what you already use—Kubernetes (EKS/GKE/AKS or on‑prem), and common tools like MLflow/KServe. No forced migrations. Many teams start with cost reporting and guardrails, then expand to standardized deployments and audit.
+
+Would a brief walkthrough help your team evaluate this quickly? If you’re not the right contact, who leads MLOps/platform at TechCorp AI?
+
+Thanks,
+[Your Name]
+
+============================================================
+EMAIL 2: John Smith at TechCorp AI
+============================================================
+
+SUBJECT: Your AI initiatives at TechCorp AI
+
+MESSAGE #1:
+----------------------------------------
+Hi John, I noticed your work in AI/ML at TechCorp AI. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.
+
+MESSAGE #2:
+----------------------------------------
+Following up on my previous message - I was reading about TechCorp AI's AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?
+

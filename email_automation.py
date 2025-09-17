@@ -244,6 +244,7 @@ Focus on finding real, actionable insights about their AI/ML initiatives, techni
                 model=self.config.reasoning_model,
                 reasoning_effort="high",
                 stream=False,
+                timeout=self.config.timeout_seconds,
             extra_headers={
                     "X-TFY-METADATA": '{"service":"sales_automation","step":"research"}',
                     "X-TFY-LOGGING-CONFIG": f'{{"enabled": {str(self.config.enable_tfy_logging).lower()}}}',
@@ -256,8 +257,12 @@ Focus on finding real, actionable insights about their AI/ML initiatives, techni
             return parser.parse_research_csv(research_csv_content, prospects)
             
         except Exception as e:
-            logger.error(f"Research LLM call failed: {e}")
-            raise
+            if "timeout" in str(e).lower():
+                logger.error(f"Research LLM call timed out after {self.config.timeout_seconds} seconds: {e}")
+                raise Exception(f"LLM API call timed out after {self.config.timeout_seconds} seconds. Try reducing CHUNK_SIZE or increasing TIMEOUT_SECONDS.")
+            else:
+                logger.error(f"Research LLM call failed: {e}")
+                raise
     
     def call_email_llm(self, research_results: List[ResearchOutput]) -> List[EmailOutput]:
         """
@@ -288,6 +293,7 @@ Make each email highly specific to their situation, challenges, and technical ne
                 model=self.config.reasoning_model,
                 reasoning_effort="high",
                 stream=False,
+                timeout=self.config.timeout_seconds,
                 extra_headers={
                     "X-TFY-METADATA": '{"service":"sales_automation","step":"email_generation"}',
                     "X-TFY-LOGGING-CONFIG": f'{{"enabled": {str(self.config.enable_tfy_logging).lower()}}}',
@@ -300,8 +306,12 @@ Make each email highly specific to their situation, challenges, and technical ne
             return parser.parse_email_response(email_content, research_results)
             
         except Exception as e:
-            logger.error(f"Email LLM call failed: {e}")
-            raise
+            if "timeout" in str(e).lower():
+                logger.error(f"Email LLM call timed out after {self.config.timeout_seconds} seconds: {e}")
+                raise Exception(f"LLM API call timed out after {self.config.timeout_seconds} seconds. Try reducing CHUNK_SIZE or increasing TIMEOUT_SECONDS.")
+            else:
+                logger.error(f"Email LLM call failed: {e}")
+                raise
     
     def _prospects_to_csv_string(self, prospects: List[ProspectInput]) -> str:
         """Convert prospects to CSV string format"""
