@@ -13,27 +13,27 @@ from truefoundry import client
 class PipelineConfig:
     """Configuration class for email automation pipeline"""
     
-    # API Configuration
-    api_key: Optional[str] = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtWMlZwX3lsQXFudGwwT0hQWVRoUVk3VTFPUSJ9.eyJhdWQiOiI3NDY2NzkyZC02NTZmLTNhMzAtMzAzOS02MTMwMzQzODMxMzYiLCJleHAiOjM3MTcxNDE4NzEsImlhdCI6MTc1NzU4OTg3MSwiaXNzIjoidHJ1ZWZvdW5kcnkuY29tIiwic3ViIjoiY21mZmJtb2M0OGF2YTAxcGlmaWZvZG1yciIsImp0aSI6IjAxY2U4NDZkLTY3MWEtNDY3MC04YjQwLWZlM2RjYzViZjRhMiIsInN1YmplY3RTbHVnIjoiZGVmYXVsdC1jbWV4Mm9hdHMzdDM0MDFwcmMwenFjdDN5IiwidXNlcm5hbWUiOiJkZWZhdWx0LWNtZXgyb2F0czN0MzQwMXByYzB6cWN0M3kiLCJ1c2VyVHlwZSI6InNlcnZpY2VhY2NvdW50Iiwic3ViamVjdFR5cGUiOiJzZXJ2aWNlYWNjb3VudCIsInRlbmFudE5hbWUiOiJ0ZnktZW8iLCJyb2xlcyI6W10sImFwcGxpY2F0aW9uSWQiOiI3NDY2NzkyZC02NTZmLTNhMzAtMzAzOS02MTMwMzQzODMxMzYifQ.roiPG72r_PI-R_yLmIP6qGDawJYy9-Hl5_RNTgbb4u5vnOnpWKs6F4L84AifiRP3xHk670OquOnmP2YYXewq_b8gwfGkJbFu9EAK9QhsdtTfJD838AoKYfGVTvUyA22InEv4rV46H-uVEZ7IQmhH4Y8oL5H0nMH44OmJxOhaz0pip3i4neEct_rrS3YrvTUTs9GRgaf4cjaiCx6-Xu3f0U5irFkrduntUzPOZT7lITxeoYsnOqEtuiP8QBASNt_NYykRMykQXeUvOkwdQIdXasClKxU0EY32QAh3FvrT3W4Zpl9wPeo4f0Nav9SC8t_wtGfmUNQDhS6gSPul-G_lng"
-    base_url: str = "https://llm-gateway.truefoundry.com"
-    reasoning_model: str = "openai-main/gpt-5"
+    # API Configuration (all from environment variables)
+    api_key: Optional[str] = None
+    base_url: Optional[str] = None  
+    reasoning_model: Optional[str] = None
     
     # Prompt Template Configuration
     research_prompt_fqn: Optional[str] = None  # FQN for research prompt template
     email_prompt_fqn: Optional[str] = None     # FQN for email prompt template
     use_prompt_templates: bool = False         # Enable/disable prompt templates
     
-    # Processing Configuration
+    # Processing Configuration (with defaults, can be overridden by env vars)
     chunk_size: int = 5  # Number of prospects to process at once
     max_retries: int = 3
     timeout_seconds: int = 1200  # Extended timeout for maximum reasoning (20 minutes per call)
     
-    # Output Configuration
+    # Output Configuration (with defaults, can be overridden by env vars)
     output_dir: str = "output"
     research_csv_prefix: str = "research_output"
     email_txt_prefix: str = "email_output"
     
-    # Logging Configuration
+    # Logging Configuration (with defaults, can be overridden by env vars)
     log_level: str = "INFO"
     enable_tfy_logging: bool = True
     
@@ -42,10 +42,24 @@ class PipelineConfig:
         """Create configuration from environment variables"""
         # Create default instance to get default values
         default = cls()
+        
+        # Required environment variables - will raise error if missing
+        api_key = os.getenv("TFY_API_KEY")
+        if not api_key:
+            raise ValueError("TFY_API_KEY environment variable is required")
+            
+        base_url = os.getenv("TFY_BASE_URL") 
+        if not base_url:
+            raise ValueError("TFY_BASE_URL environment variable is required")
+            
+        reasoning_model = os.getenv("TFY_REASONING_MODEL")
+        if not reasoning_model:
+            raise ValueError("TFY_REASONING_MODEL environment variable is required")
+        
         return cls(
-            api_key=os.getenv("TFY_API_KEY") or default.api_key,
-            base_url=os.getenv("TFY_BASE_URL", default.base_url),
-            reasoning_model=os.getenv("TFY_REASONING_MODEL", default.reasoning_model),
+            api_key=api_key,
+            base_url=base_url,
+            reasoning_model=reasoning_model,
             research_prompt_fqn=os.getenv("RESEARCH_PROMPT_FQN"),
             email_prompt_fqn=os.getenv("EMAIL_PROMPT_FQN"),
             use_prompt_templates=os.getenv("USE_PROMPT_TEMPLATES", "false").lower() == "true",
