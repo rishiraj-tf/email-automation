@@ -253,8 +253,8 @@ Focus on finding real, actionable insights about their AI/ML initiatives, techni
                     {"role": "user", "content": user_prompt}
                 ],
                 model=self.config.reasoning_model,
-                reasoning_effort="max",
-                max_completion_tokens=32000,  # Maximum completion tokens for unlimited reasoning
+                reasoning_effort="high",  # TrueFoundry supports: low, medium, high
+                max_completion_tokens=8000,  # High but realistic token limit
                 temperature=0.1,   # Low temperature for more focused reasoning
                 stream=False,
                 timeout=self.config.timeout_seconds,
@@ -312,8 +312,8 @@ Make each message highly specific to their exact situation, challenges, and tech
                     {"role": "user", "content": user_prompt}
                 ],
                 model=self.config.reasoning_model,
-                reasoning_effort="max",
-                max_completion_tokens=32000,  # Maximum completion tokens for unlimited reasoning
+                reasoning_effort="high",  # TrueFoundry supports: low, medium, high
+                max_completion_tokens=8000,  # High but realistic token limit
                 temperature=0.1,   # Low temperature for more focused reasoning
                 stream=False,
                 timeout=self.config.timeout_seconds,
