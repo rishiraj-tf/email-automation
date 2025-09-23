@@ -17,9 +17,9 @@ class PipelineConfig:
     reasoning_model: str = "openai-main/gpt-5"
     
     # Processing Configuration
-    chunk_size: int = 5  # Number of prospects to process at once
+    chunk_size: int = 15  # Number of prospects to process at once
     max_retries: int = 3
-    timeout_seconds: int = 300  # Timeout for individual LLM API calls in seconds
+    timeout_seconds: int = 600  # Timeout for individual LLM API calls in seconds
     
     # Output Configuration
     output_dir: str = "output"
@@ -105,34 +105,32 @@ RESEARCH_SYSTEM_PROMPT = """You are a B2B sales research expert conducting deep,
 
 Output comprehensive research for each prospect in CSV format with all specified columns."""
 
-EMAIL_SYSTEM_PROMPT = """You are an expert B2B sales email writer for TrueFoundry. Use the provided research output to create highly personalized emails following the exact email templates.
+EMAIL_SYSTEM_PROMPT = """You are an expert B2B sales researcher and LinkedIn DM writer for TrueFoundry. Use the provided research output to create highly personalized LinkedIn DM messages following the exact template provided.
 
 **INSTRUCTIONS:**
-Use the research output context: {research_output} to extract relevant information and fill the template placeholders. Generate both Message #1 and Message #2 using the templates below. Keep the language extremely simple, conversational, and helpful - write as if you're having a casual conversation with a colleague. Avoid any technical jargon, bullet points, or complex terminology. Write in a flowing paragraph style that feels natural and human. If research data is missing for a placeholder, gracefully omit that section or use simple alternatives.
+Use the research output context: {research_output} to find actual values for the template placeholders. Generate a personalized LinkedIn DM using the specific template below. Keep the research evidence-based and provide source URLs.
 
-**MESSAGE #1 TEMPLATE:**
-Really nice to connect with you {{firstName}}. 
-It's great to see your leadership in {{ai_initiative}}. 
-Wanted to ask if you are using {{on_prem_provider}} to host this? 
-We're a control panel that unifies models, infra (GPU/DB/others) and tools. 
-It has a very intuitive UX, and helps teams to move from prototype to prod in weeks (e.g: Merck launched 30+ genAI usecases in less than a year). 
-NVIDIA, CVS, Synopsys, Mastercard, Comcast and other orgs have realized measurable genAI ROI with us. 
-Can I find some time with you and share more on what we do & learn about your priorities?
+**LINKEDIN DM TEMPLATE:**
+Hi {{firstName}}, I sincerely relate seeing {{companyName}}'s work on [*****some company level AI initiatives******]. Are you working on [******person particular AI project******] and is scaling this project or [******person particular key challenges******] some key interests? Mastercard, CVS, Merck, NVIDIA, Comcast, and Synopsys are already in production with this and seeing measurable GenAI ROI with us. Can we have a short intro chat (Phone call/Zoom - your choice), and see if we really bring any value?
 
-**MESSAGE #2 TEMPLATE:**
-Ask a probing question? I was reading more about {{ai_initiative}} and wanted to ask if your current focus areas are {{key_problems}}? 
-We've particularly added value to {{relevant_customers}} by {{relevant_capabilities}} 
-I also read that {{company_name}} is using {{cloud_provider}} as well. Wanted to ask if you are more focused on {{on_prem_provider}} or {{cloud_provider}}?
+**REQUIRED OUTPUT FORMAT:**
 
-**PLACEHOLDER MAPPING FROM RESEARCH:**
-- firstName: Extract from research
-- ai_initiative: AI/ML initiatives from research  
-- on_prem_provider: On-Prem Provider/Vendor from research
-- cloud_provider: Cloud Provider from research
-- key_problems: Key challenges from research
-- relevant_customers: Similar companies from TrueFoundry customer base
-- relevant_capabilities: TrueFoundry capabilities that match their needs
-- company_name: Company name from research
+**Part 1: Placeholder Values**
+1. {{firstName}}: [Extract first name from research]
+2. {{companyName}}: [Extract company name from research]
+3. [*****some company level AI initiatives******]: [Specific company-level AI initiatives with source URL]
+4. [******person particular AI project******]: [Specific AI project this person is directly involved in with source URL]
+5. [******person particular key challenges******]: [Specific key challenges in their AI projects with source URL]
 
-Generate personalized emails by filling these templates with actual values from the research context.
+**Part 2: LinkedIn DM Message**
+[Complete LinkedIn DM with all placeholders replaced with actual values from Part 1]
+
+**RESEARCH GUIDELINES:**
+1. For AI initiatives, projects, and key challenges - keep it evidence-based and provide source URLs for each numbered output
+2. Focus on finding real, verifiable information about the person and their company's AI work
+3. Ensure the final message reads coherently after placeholder replacement
+4. Do NOT change any words in the template except for replacing the placeholders
+5. If specific information cannot be found, use "NA" and note the lack of available data
+
+**CRITICAL:** The template structure and exact wording must remain unchanged - only replace the placeholders with actual research-based values.
 """
