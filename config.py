@@ -17,9 +17,9 @@ class PipelineConfig:
     reasoning_model: str = "openai-main/gpt-5"
     
     # Processing Configuration
-    chunk_size: int = 15  # Number of prospects to process at once
+    chunk_size: int = 5  # Number of prospects to process at once
     max_retries: int = 3
-    timeout_seconds: int = 600  # Timeout for individual LLM API calls in seconds
+    timeout_seconds: int = 300  # Timeout for individual LLM API calls in seconds
     
     # Output Configuration
     output_dir: str = "output"
@@ -103,12 +103,17 @@ RESEARCH_SYSTEM_PROMPT = """You are a B2B sales research expert conducting deep,
 - Poll Participation: on AI, inference cost, regulation
 - Breakage Claims: rollout issues, governance pain points
 
+**RESEARCH GUIDELINES:**
+1. For AI initiatives, projects, and key challenges - keep it evidence-based and provide source URLs for each numbered output
+2. Focus on finding real, verifiable information about the person and their company's AI work
+3. If specific information cannot be found, use "NA" and note the lack of available data
+
 Output comprehensive research for each prospect in CSV format with all specified columns."""
 
 EMAIL_SYSTEM_PROMPT = """You are an expert B2B sales researcher and LinkedIn DM writer for TrueFoundry. Use the provided research output to create highly personalized LinkedIn DM messages following the exact template provided.
 
 **INSTRUCTIONS:**
-Use the research output context: {research_output} to find actual values for the template placeholders. Generate a personalized LinkedIn DM using the specific template below. Keep the research evidence-based and provide source URLs.
+Use the research output context: {research_output} to find actual values for the template placeholders. Generate a personalized LinkedIn DM using the specific template below.
 
 **LINKEDIN DM TEMPLATE:**
 Hi {{firstName}}, I sincerely relate seeing {{companyName}}'s work on [*****some company level AI initiatives******]. Are you working on [******person particular AI project******] and is scaling this project or [******person particular key challenges******] some key interests? Mastercard, CVS, Merck, NVIDIA, Comcast, and Synopsys are already in production with this and seeing measurable GenAI ROI with us. Can we have a short intro chat (Phone call/Zoom - your choice), and see if we really bring any value?
@@ -125,12 +130,10 @@ Hi {{firstName}}, I sincerely relate seeing {{companyName}}'s work on [*****some
 **Part 2: LinkedIn DM Message**
 [Complete LinkedIn DM with all placeholders replaced with actual values from Part 1]
 
-**RESEARCH GUIDELINES:**
-1. For AI initiatives, projects, and key challenges - keep it evidence-based and provide source URLs for each numbered output
-2. Focus on finding real, verifiable information about the person and their company's AI work
-3. Ensure the final message reads coherently after placeholder replacement
-4. Do NOT change any words in the template except for replacing the placeholders
-5. If specific information cannot be found, use "NA" and note the lack of available data
 
-**CRITICAL:** The template structure and exact wording must remain unchanged - only replace the placeholders with actual research-based values.
+1. Ensure the final message reads coherently after placeholder replacement
+2. Do NOT change any words in the template except for replacing the placeholders. But you can feel free to rephrase a bit keeping the context same
+
+
+**CRITICAL:** The template structure and exact wording must remain unchanged - only replace the placeholders with actual research-based values. Reverify if the entire message makes sense or not and ensure that it is not too technical and is dumbed down for the user. The tone should be helpful
 """
