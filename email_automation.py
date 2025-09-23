@@ -13,7 +13,7 @@ from datetime import datetime
 import pandas as pd
 from openai import OpenAI
 
-from config import PipelineConfig, RESEARCH_SYSTEM_PROMPT, EMAIL_SYSTEM_PROMPT
+from config import PipelineConfig, RESEARCH_SYSTEM_PROMPT, EMAIL_SYSTEM_PROMPT, get_research_prompt, get_email_prompt
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -225,24 +225,37 @@ class TrueFoundryGateway:
         # Prepare input data as CSV format string
         csv_input = self._prospects_to_csv_string(prospects)
         
-        user_prompt = f"""Analyze these prospects and provide comprehensive research insights:
+        user_prompt = f"""Take your time to deeply analyze these prospects with maximum reasoning and comprehensive research. Use unlimited thinking to uncover detailed insights:
 
 Input CSV:
 {csv_input}
 
-Please provide detailed research for each prospect in CSV format with the following columns:
+Please provide extremely detailed research for each prospect in CSV format with the following columns:
 {', '.join(ResearchOutput.get_csv_headers())}
+
+THINK DEEPLY AND COMPREHENSIVELY:
+- Spend extensive time researching each person's AI/ML background
+- Analyze their company's strategic AI initiatives in detail  
+- Identify specific technical challenges and pain points
+- Consider business priorities and market positioning
+- Use maximum reasoning to find actionable, evidence-based insights
+- There are no limits on thinking time or analysis depth
 
 Focus on finding real, actionable insights about their AI/ML initiatives, technical challenges, and business priorities."""
 
         try:
+            # Get research prompt (either from template or fallback)
+            research_prompt = get_research_prompt(self.config)
+            
             response = self.client.chat.completions.create(
             messages=[
-                    {"role": "system", "content": RESEARCH_SYSTEM_PROMPT},
+                    {"role": "system", "content": research_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
                 model=self.config.reasoning_model,
-                reasoning_effort="high",
+                reasoning_effort="max",
+                max_tokens=32000,  # Maximum tokens for unlimited reasoning
+                temperature=0.1,   # Low temperature for more focused reasoning
                 stream=False,
                 timeout=self.config.timeout_seconds,
             extra_headers={
@@ -273,25 +286,35 @@ Focus on finding real, actionable insights about their AI/ML initiatives, techni
         # Prepare research data as input
         research_input = self._research_to_input_string(research_results)
 
-        user_prompt = f"""Based on this research data, create personalized emails for each prospect:
+        user_prompt = f"""Use maximum reasoning and deep thinking to create highly personalized LinkedIn DMs based on this comprehensive research data:
 
 {research_input}
 
-For each prospect, generate:
-1. Subject line
-2. Email body for Message #1
-3. Email body for Message #2
+THINK EXTENSIVELY AND REASON DEEPLY:
+- Analyze each person's specific AI background and interests
+- Consider their company's unique AI initiatives and challenges  
+- Reason through the best personalization approach for each prospect
+- Think deeply about their pain points and how TrueFoundry can help
+- Use unlimited reasoning time to craft the most effective message
+- No limits on analysis depth or thinking time
 
-Make each email highly specific to their situation, challenges, and technical needs."""
+For each prospect, generate personalized LinkedIn DM following the exact template format specified in the system prompt.
+
+Make each message highly specific to their exact situation, challenges, and technical needs using deep analytical reasoning."""
 
         try:
+            # Get email prompt (either from template or fallback)
+            email_prompt = get_email_prompt(self.config)
+            
             response = self.client.chat.completions.create(
             messages=[
-                    {"role": "system", "content": EMAIL_SYSTEM_PROMPT},
+                    {"role": "system", "content": email_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
                 model=self.config.reasoning_model,
-                reasoning_effort="high",
+                reasoning_effort="max",
+                max_tokens=32000,  # Maximum tokens for unlimited reasoning
+                temperature=0.1,   # Low temperature for more focused reasoning
                 stream=False,
                 timeout=self.config.timeout_seconds,
                 extra_headers={

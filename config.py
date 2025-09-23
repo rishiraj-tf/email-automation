@@ -3,8 +3,10 @@ Configuration settings for Email Automation Pipeline
 """
 
 import os
+import time
 from dataclasses import dataclass
 from typing import Optional
+from truefoundry import client
 
 
 @dataclass
@@ -16,10 +18,15 @@ class PipelineConfig:
     base_url: str = "https://llm-gateway.truefoundry.com"
     reasoning_model: str = "openai-main/gpt-5"
     
+    # Prompt Template Configuration
+    research_prompt_fqn: Optional[str] = None  # FQN for research prompt template
+    email_prompt_fqn: Optional[str] = None     # FQN for email prompt template
+    use_prompt_templates: bool = False         # Enable/disable prompt templates
+    
     # Processing Configuration
     chunk_size: int = 5  # Number of prospects to process at once
     max_retries: int = 3
-    timeout_seconds: int = 300  # Timeout for individual LLM API calls in seconds
+    timeout_seconds: int = 1200  # Extended timeout for maximum reasoning (20 minutes per call)
     
     # Output Configuration
     output_dir: str = "output"
@@ -39,6 +46,9 @@ class PipelineConfig:
             api_key=os.getenv("TFY_API_KEY") or default.api_key,
             base_url=os.getenv("TFY_BASE_URL", default.base_url),
             reasoning_model=os.getenv("TFY_REASONING_MODEL", default.reasoning_model),
+            research_prompt_fqn=os.getenv("RESEARCH_PROMPT_FQN"),
+            email_prompt_fqn=os.getenv("EMAIL_PROMPT_FQN"),
+            use_prompt_templates=os.getenv("USE_PROMPT_TEMPLATES", "false").lower() == "true",
             chunk_size=int(os.getenv("CHUNK_SIZE", str(default.chunk_size))),
             max_retries=int(os.getenv("MAX_RETRIES", str(default.max_retries))),
             timeout_seconds=int(os.getenv("TIMEOUT_SECONDS", str(default.timeout_seconds))),
@@ -110,30 +120,125 @@ RESEARCH_SYSTEM_PROMPT = """You are a B2B sales research expert conducting deep,
 
 Output comprehensive research for each prospect in CSV format with all specified columns."""
 
-EMAIL_SYSTEM_PROMPT = """You are an expert B2B sales researcher and LinkedIn DM writer for TrueFoundry. Use the provided research output to create highly personalized LinkedIn DM messages following the exact template provided.
+EMAIL_SYSTEM_PROMPT = """You are a LinkedIn DM writer for TrueFoundry. Create ONLY LinkedIn DM messages using the exact template below. DO NOT create emails, DO NOT use bullet points, DO NOT deviate from the template structure.
 
-**INSTRUCTIONS:**
-Use the research output context: {research_output} to find actual values for the template placeholders. Generate a personalized LinkedIn DM using the specific template below.
+**STRICT REQUIREMENTS:**
+- Generate ONLY LinkedIn DM messages (never emails)
+- Use ONLY the exact template provided below
+- NO bullet points, NO lists, NO email formatting
+- ONLY replace the placeholders with actual research values
+- Keep language simple and conversational
+- DO NOT change the template wording except for placeholder replacement
 
-**LINKEDIN DM TEMPLATE:**
+**LINKEDIN DM TEMPLATE (USE THIS EXACTLY):**
 Hi {{firstName}}, I sincerely relate seeing {{companyName}}'s work on [*****some company level AI initiatives******]. Are you working on [******person particular AI project******] and is scaling this project or [******person particular key challenges******] some key interests? Mastercard, CVS, Merck, NVIDIA, Comcast, and Synopsys are already in production with this and seeing measurable GenAI ROI with us. Can we have a short intro chat (Phone call/Zoom - your choice), and see if we really bring any value?
 
-**REQUIRED OUTPUT FORMAT:**
+**OUTPUT FORMAT:**
 
-**Part 1: Placeholder Values**
-1. {{firstName}}: [Extract first name from research]
-2. {{companyName}}: [Extract company name from research]
-3. [*****some company level AI initiatives******]: [Specific company-level AI initiatives with source URL]
-4. [******person particular AI project******]: [Specific AI project this person is directly involved in with source URL]
-5. [******person particular key challenges******]: [Specific key challenges in their AI projects with source URL]
+**Part 1: Research Values**
+1. {{firstName}}: [First name from research]
+2. {{companyName}}: [Company name from research]  
+3. [*****some company level AI initiatives******]: [Company AI initiatives from research]
+4. [******person particular AI project******]: [Person's specific AI project from research]
+5. [******person particular key challenges******]: [Person's AI challenges from research]
 
-**Part 2: LinkedIn DM Message**
-[Complete LinkedIn DM with all placeholders replaced with actual values from Part 1]
+**Part 2: LinkedIn DM**
+[The complete LinkedIn DM message with all placeholders filled in from Part 1 values]
 
-
-1. Ensure the final message reads coherently after placeholder replacement
-2. Do NOT change any words in the template except for replacing the placeholders. But you can feel free to rephrase a bit keeping the context same
-
-
-**CRITICAL:** The template structure and exact wording must remain unchanged - only replace the placeholders with actual research-based values. Reverify if the entire message makes sense or not and ensure that it is not too technical and is dumbed down for the user. The tone should be helpful
+**CRITICAL RULES:**
+- This is a LINKEDIN DM, not an email
+- Use ONLY the template above - no other format
+- NO bullet points anywhere in the message
+- NO email signatures, subjects, or formatting
+- Replace placeholders with research-based values only
+- Keep the exact template wording and structure
+- Message should be conversational and simple
 """
+
+
+# Prompt Template Management
+CACHED_RESEARCH_PROMPT = ""
+CACHED_EMAIL_PROMPT = ""
+CACHED_PROMPT_LAST_FETCHED: float = 0
+
+
+def get_prompt_template(fqn: str) -> str:
+    """
+    Fetch prompt template from TrueFoundry using FQN
+    
+    Args:
+        fqn: Fully Qualified Name of the prompt template
+        
+    Returns:
+        Prompt template content
+    """
+    try:
+        prompt_version_response = client.prompt_versions.get_by_fqn(fqn=fqn)
+        return prompt_version_response.data.manifest
+    except Exception as e:
+        raise Exception(f"Failed to fetch prompt template '{fqn}': {str(e)}")
+
+
+def get_cached_prompt_template(fqn: str, prompt_type: str = "research") -> str:
+    """
+    Fetch prompt template with caching for performance
+    
+    Args:
+        fqn: Fully Qualified Name of the prompt template
+        prompt_type: Type of prompt ("research" or "email") for caching
+        
+    Returns:
+        Cached prompt template content
+    """
+    global CACHED_RESEARCH_PROMPT, CACHED_EMAIL_PROMPT, CACHED_PROMPT_LAST_FETCHED
+    
+    # Cache TTL: 10 minutes
+    ttl = 600
+    
+    if time.time() - CACHED_PROMPT_LAST_FETCHED > ttl:
+        # Cache expired, fetch fresh prompts
+        if prompt_type == "research":
+            CACHED_RESEARCH_PROMPT = get_prompt_template(fqn)
+        else:
+            CACHED_EMAIL_PROMPT = get_prompt_template(fqn)
+        CACHED_PROMPT_LAST_FETCHED = time.time()
+        
+    return CACHED_RESEARCH_PROMPT if prompt_type == "research" else CACHED_EMAIL_PROMPT
+
+
+def get_research_prompt(config: PipelineConfig) -> str:
+    """
+    Get research prompt - either from template or fallback to hardcoded
+    
+    Args:
+        config: Pipeline configuration
+        
+    Returns:
+        Research prompt content
+    """
+    if config.use_prompt_templates and config.research_prompt_fqn:
+        try:
+            return get_cached_prompt_template(config.research_prompt_fqn, "research")
+        except Exception as e:
+            print(f"Warning: Failed to fetch research prompt template, using fallback: {e}")
+            
+    return RESEARCH_SYSTEM_PROMPT
+
+
+def get_email_prompt(config: PipelineConfig) -> str:
+    """
+    Get email prompt - either from template or fallback to hardcoded
+    
+    Args:
+        config: Pipeline configuration
+        
+    Returns:
+        Email prompt content
+    """
+    if config.use_prompt_templates and config.email_prompt_fqn:
+        try:
+            return get_cached_prompt_template(config.email_prompt_fqn, "email")
+        except Exception as e:
+            print(f"Warning: Failed to fetch email prompt template, using fallback: {e}")
+            
+    return EMAIL_SYSTEM_PROMPT
