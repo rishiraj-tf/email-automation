@@ -254,7 +254,7 @@ Focus on finding real, actionable insights about their AI/ML initiatives, techni
                 ],
                 model=self.config.reasoning_model,
                 reasoning_effort="max",
-                max_tokens=32000,  # Maximum tokens for unlimited reasoning
+                max_completion_tokens=32000,  # Maximum completion tokens for unlimited reasoning
                 temperature=0.1,   # Low temperature for more focused reasoning
                 stream=False,
                 timeout=self.config.timeout_seconds,
@@ -313,7 +313,7 @@ Make each message highly specific to their exact situation, challenges, and tech
                 ],
                 model=self.config.reasoning_model,
                 reasoning_effort="max",
-                max_tokens=32000,  # Maximum tokens for unlimited reasoning
+                max_completion_tokens=32000,  # Maximum completion tokens for unlimited reasoning
                 temperature=0.1,   # Low temperature for more focused reasoning
                 stream=False,
                 timeout=self.config.timeout_seconds,
