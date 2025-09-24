@@ -108,25 +108,6 @@ RESEARCH_SYSTEM_PROMPT = """You are a B2B sales research expert conducting deep,
 4. How TrueFoundry could help in that context
 5. Personal details (public info only: interests, travel, favorites)
 
-**Additional Categories to Capture:**
-- Executive Urgency: earnings/board AI/ML mentions, infra costs
-- Regulatory / Audit Stress: compliance deadlines, SOC-2, EU AI Act  
-- Incident / Outage / Rollback incidents
-- Competitive Stack Usage: mentions of rival vendors
-- Fresh Funding / Partnerships
-- Hiring Spikes: ≥3 openings in ML-Ops, AI infra
-- Metric Targets: SLA, ARR, CSAT, cost per inference
-- Negative Triggers: layoffs, vendor churn, failed PoCs
-- Technical Deployment Clues: On-Prem Provider/Vendor Name, Cloud Provider(s) name
-- Production Maturity: inference volume, FDA cleared use cases  
-- Conference / Webinar Quotes
-- Recent AI Posts/Comments (<90 days)
-- Experience Shift: career pivots toward AI infra/platform
-- Org Map: boss, peers, reports  
-- Internal OKRs / Scorecards: if public
-- Event Activity: speaker/exhibitor at conferences
-- Poll Participation: on AI, inference cost, regulation
-- Breakage Claims: rollout issues, governance pain points
 
 **RESEARCH GUIDELINES:**
 1. For AI initiatives, projects, and key challenges - be comprehensive and insightful
