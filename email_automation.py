@@ -225,23 +225,24 @@ class TrueFoundryGateway:
         # Prepare input data as CSV format string
         csv_input = self._prospects_to_csv_string(prospects)
         
-        user_prompt = f"""Take your time to deeply analyze these prospects with maximum reasoning and comprehensive research. Use unlimited thinking to uncover detailed insights:
+        user_prompt = f"""Conduct comprehensive research on these prospects with deep analysis and intelligence gathering:
 
 Input CSV:
 {csv_input}
 
-Please provide extremely detailed research for each prospect in CSV format with the following columns:
-{', '.join(ResearchOutput.get_csv_headers())}
+RESEARCH REQUIREMENTS:
+- For each prospect, conduct thorough research on their AI/ML background and company initiatives
+- Use logical inference based on their role, company, and industry to fill gaps
+- Generate meaningful, specific insights for EVERY field - no generic "to be researched" responses
+- Focus on actionable intelligence that would be valuable for personalized outreach
 
-THINK DEEPLY AND COMPREHENSIVELY:
-- Spend extensive time researching each person's AI/ML background
-- Analyze their company's strategic AI initiatives in detail  
-- Identify specific technical challenges and pain points
-- Consider business priorities and market positioning
-- Use maximum reasoning to find actionable, evidence-based insights
-- There are no limits on thinking time or analysis depth
+OUTPUT REQUIREMENTS:
+You MUST output a properly formatted CSV with:
+1. Header row with exact column names: {', '.join(ResearchOutput.get_csv_headers())}
+2. Data rows with meaningful content for EVERY field for EVERY prospect
+3. Specific, detailed information in each field (not generic placeholders)
 
-Focus on finding real, actionable insights about their AI/ML initiatives, technical challenges, and business priorities."""
+CRITICAL: Fill ALL columns with meaningful research-based or intelligently inferred content. Provide comprehensive insights for each prospect that would enable highly personalized outreach."""
 
         try:
             # Get research prompt (either from template or fallback)
@@ -286,21 +287,24 @@ Focus on finding real, actionable insights about their AI/ML initiatives, techni
         # Prepare research data as input
         research_input = self._research_to_input_string(research_results)
 
-        user_prompt = f"""Use maximum reasoning and deep thinking to create highly personalized LinkedIn DMs based on this comprehensive research data:
+        user_prompt = f"""Generate personalized LinkedIn DM messages for each prospect using the comprehensive research data below:
 
 {research_input}
 
-THINK EXTENSIVELY AND REASON DEEPLY:
-- Analyze each person's specific AI background and interests
-- Consider their company's unique AI initiatives and challenges  
-- Reason through the best personalization approach for each prospect
-- Think deeply about their pain points and how TrueFoundry can help
-- Use unlimited reasoning time to craft the most effective message
-- No limits on analysis depth or thinking time
+PERSONALIZATION REQUIREMENTS:
+- Create individual LinkedIn DM for EACH prospect using their specific research data
+- Replace ALL placeholders with actual research insights (company AI initiatives, person's projects, challenges)
+- Make each message highly specific to their situation and needs
+- Follow the EXACT output format specified in the system prompt
 
-For each prospect, generate personalized LinkedIn DM following the exact template format specified in the system prompt.
+OUTPUT FORMAT REQUIRED:
+For each prospect, generate:
+===PROSPECT [N]: [Person Name] at [Company]===
+SUBJECT: Your AI initiatives at [Company]
+MESSAGE #1: [Personalized LinkedIn DM using their specific research data]
+MESSAGE #2: [Personalized follow-up message]
 
-Make each message highly specific to their exact situation, challenges, and technical needs using deep analytical reasoning."""
+CRITICAL: Use the actual research data provided above to personalize every message. NO generic templates or placeholders."""
 
         try:
             # Get email prompt (either from template or fallback)
