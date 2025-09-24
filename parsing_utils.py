@@ -290,30 +290,45 @@ class LLMResponseParser:
         subject_match = re.search(r'subject:?\s*(.+)', section, re.IGNORECASE)
         subject = subject_match.group(1).strip() if subject_match else f"Your AI initiatives at {research.company_name}"
         
-        # Extract message 1
-        msg1_match = re.search(r'message\s*#?1:?\s*(.*?)(?=message\s*#?2|$)', section, re.IGNORECASE | re.DOTALL)
-        msg1 = msg1_match.group(1).strip() if msg1_match else "Personalized message to be generated"
+        # Extract message 1 - try multiple patterns
+        msg1 = "Personalized message to be generated"
         
-        # Extract message 2
-        msg2_match = re.search(r'message\s*#?2:?\s*(.*)', section, re.IGNORECASE | re.DOTALL)
-        msg2 = msg2_match.group(1).strip() if msg2_match else "Follow-up message to be generated"
+        # Pattern 1: MESSAGE #1:
+        msg1_match = re.search(r'message\s*#?1:?\s*(.*?)(?=message\s*#?2|$)', section, re.IGNORECASE | re.DOTALL)
+        if msg1_match:
+            msg1 = msg1_match.group(1).strip()
+        else:
+            # Pattern 2: Part 2: LinkedIn DM
+            linkedin_dm_match = re.search(r'part\s*2:?\s*linkedin\s*dm\s*(.*?)(?=part\s*3|$)', section, re.IGNORECASE | re.DOTALL)
+            if linkedin_dm_match:
+                msg1 = linkedin_dm_match.group(1).strip()
+            else:
+                # Pattern 3: Try to extract LinkedIn DM that starts with "Hi"
+                hi_match = re.search(r'(Hi\s+\w+,.*?)(?=\n\s*$|\Z)', section, re.IGNORECASE | re.DOTALL)
+                if hi_match:
+                    msg1 = hi_match.group(1).strip()
+        
+        # Clean up the message
+        if msg1:
+            msg1 = msg1.strip()
         
         return EmailOutput(
             person_name=research.person_name,
             company_name=research.company_name,
             email_subject=subject,
             email_body_msg1=msg1,
-            email_body_msg2=msg2
+            email_body_msg2=""  # Only MESSAGE #1 as requested
         )
     
     @staticmethod
     def _create_fallback_email(research):
         """Create fallback email when parsing fails"""
         from email_automation import EmailOutput
+        first_name = research.person_name.split()[0] if research.person_name else "there"
         return EmailOutput(
             person_name=research.person_name,
             company_name=research.company_name,
             email_subject=f"Your AI initiatives at {research.company_name}",
-            email_body_msg1=f"Hi {research.person_name.split()[0]}, I noticed your work in AI/ML at {research.company_name}. TrueFoundry helps teams like yours move from prototype to production faster. Would love to share how companies like NVIDIA and Mastercard have achieved measurable AI ROI with our platform.",
-            email_body_msg2=f"Following up on my previous message - I was reading about {research.company_name}'s AI initiatives and wanted to ask about your current infrastructure challenges. We've helped similar companies with MLOps, scaling, and cost optimization. Would you be open to a brief conversation?"
+            email_body_msg1=f"Hi {first_name}, I sincerely relate seeing {research.company_name}'s work on AI/ML initiatives. Are you working on scaling AI projects and are infrastructure challenges some key interests? Mastercard, CVS, Merck, NVIDIA, Comcast, and Synopsys are already in production with this and seeing measurable GenAI ROI with us. Can we have a short intro chat (Phone call/Zoom - your choice), and see if we really bring any value?",
+            email_body_msg2=""  # Only MESSAGE #1 as requested
         )

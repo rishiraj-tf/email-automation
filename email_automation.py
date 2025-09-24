@@ -296,15 +296,19 @@ PERSONALIZATION REQUIREMENTS:
 - Replace ALL placeholders with actual research insights (company AI initiatives, person's projects, challenges)
 - Make each message highly specific to their situation and needs
 - Follow the EXACT output format specified in the system prompt
+- Generate ONLY MESSAGE #1 per prospect
 
 OUTPUT FORMAT REQUIRED:
 For each prospect, generate:
-===PROSPECT [N]: [Person Name] at [Company]===
+PROSPECT 1: [Person Name] at [Company]
 SUBJECT: Your AI initiatives at [Company]
 MESSAGE #1: [Personalized LinkedIn DM using their specific research data]
-MESSAGE #2: [Personalized follow-up message]
 
-CRITICAL: Use the actual research data provided above to personalize every message. NO generic templates or placeholders."""
+CRITICAL: 
+- Use the actual research data provided above to personalize every message
+- Generate ONLY MESSAGE #1 (no MESSAGE #2)  
+- NO generic templates or placeholders
+- Follow the exact LinkedIn DM template with research-based personalization"""
 
         try:
             # Get email prompt (either from template or fallback)
