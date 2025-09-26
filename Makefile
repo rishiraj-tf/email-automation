@@ -123,3 +123,4 @@ volume-info: ## Show volume information
 	@echo ""
 	@echo "Output directory contents:"
 	@ls -la output/ 2>/dev/null || echo "Output directory not found"
+

@@ -225,24 +225,29 @@ class TrueFoundryGateway:
         # Prepare input data as CSV format string
         csv_input = self._prospects_to_csv_string(prospects)
         
-        user_prompt = f"""Conduct comprehensive research on these prospects with deep analysis and intelligence gathering:
+        user_prompt = f"""Conduct focused research on these prospects for LinkedIn DM generation:
 
 Input CSV:
 {csv_input}
 
 RESEARCH REQUIREMENTS:
-- For each prospect, conduct thorough research on their AI/ML background and company initiatives
-- Use logical inference based on their role, company, and industry to fill gaps
-- Generate meaningful, specific insights for EVERY field - no generic "to be researched" responses
-- Focus on actionable intelligence that would be valuable for personalized outreach
+- For each prospect, find their specific AI/ML work and company's AI initiatives  
+- Use logical inference based on their role, company, and industry
+- Provide detailed, comprehensive insights for each field - be thorough and specific
+- Focus on LinkedIn DM essentials + TrueFoundry value proposition
 
 OUTPUT REQUIREMENTS:
-You MUST output a properly formatted CSV with:
-1. Header row with exact column names: {', '.join(ResearchOutput.get_csv_headers())}
-2. Data rows with meaningful content for EVERY field for EVERY prospect
-3. Specific, detailed information in each field (not generic placeholders)
+Generate detailed JSON with ONLY 6 fields per prospect:
 
-CRITICAL: Fill ALL columns with meaningful research-based or intelligently inferred content. Provide comprehensive insights for each prospect that would enable highly personalized outreach."""
+{', '.join([f'"{prospect.person_name} at {prospect.company_name}"' for prospect in prospects])}
+
+CRITICAL: 
+1. Output ONLY the 6 fields specified in system prompt
+2. Provide rich, detailed content for each field - no length restrictions
+3. Generate exactly {len(prospects)} objects
+4. Output PERFECT, PARSEABLE JSON ONLY - no markdown, no text, no formatting errors
+5. Focus on comprehensive LinkedIn DM personalization + specific TrueFoundry value
+6. WARNING: Any JSON formatting errors will cause COMPLETE SYSTEM FAILURE - be precise"""
 
         try:
             # Get research prompt (either from template or fallback)
@@ -255,7 +260,7 @@ CRITICAL: Fill ALL columns with meaningful research-based or intelligently infer
                 ],
                 model=self.config.reasoning_model,
                 reasoning_effort="high",  # TrueFoundry supports: low, medium, high
-                max_completion_tokens=8000,  # High but realistic token limit
+                max_completion_tokens=16000,  # Increased for detailed research responses
                 temperature=0.1,   # Low temperature for more focused reasoning
                 stream=False,
                 timeout=self.config.timeout_seconds,
@@ -265,10 +270,25 @@ CRITICAL: Fill ALL columns with meaningful research-based or intelligently infer
                 }
             )
             
-            research_csv_content = response.choices[0].message.content
+            # Debug logging
+            logger.info(f"Research API call completed successfully")
+            if not response.choices:
+                logger.error("No choices in API response")
+                raise Exception("No choices returned from LLM API")
+            
+            research_json_content = response.choices[0].message.content
+            logger.info(f"Research response length: {len(research_json_content) if research_json_content else 0}")
+            logger.info(f"Research response preview: {research_json_content[:500] if research_json_content else 'None'}")
+            
+            if not research_json_content:
+                logger.error("Empty research response content")
+                raise Exception("Empty response content from research LLM call")
+            
             from parsing_utils import LLMResponseParser
             parser = LLMResponseParser()
-            return parser.parse_research_csv(research_csv_content, prospects)
+            parsed_results = parser.parse_research_json(research_json_content, prospects)
+            logger.info(f"Parsed {len(parsed_results)} research results")
+            return parsed_results
             
         except Exception as e:
             if "timeout" in str(e).lower():
@@ -291,24 +311,23 @@ CRITICAL: Fill ALL columns with meaningful research-based or intelligently infer
 
 {research_input}
 
-PERSONALIZATION REQUIREMENTS:
-- Create individual LinkedIn DM for EACH prospect using their specific research data
-- Replace ALL placeholders with actual research insights (company AI initiatives, person's projects, challenges)
-- Make each message highly specific to their situation and needs
-- Follow the EXACT output format specified in the system prompt
-- Generate ONLY MESSAGE #1 per prospect
+CRITICAL INSTRUCTIONS:
+1. You MUST generate a UNIQUE message for EACH of the {len(research_results)} prospects above
+2. Each message MUST use that specific person's research data (AI initiatives, projects, challenges)
+3. DO NOT reuse the same message for multiple people
+4. Follow the EXACT output format below
 
 OUTPUT FORMAT REQUIRED:
-For each prospect, generate:
-PROSPECT 1: [Person Name] at [Company]
-SUBJECT: Your AI initiatives at [Company]
-MESSAGE #1: [Personalized LinkedIn DM using their specific research data]
+Generate this format for ALL {len(research_results)} prospects:
 
-CRITICAL: 
-- Use the actual research data provided above to personalize every message
-- Generate ONLY MESSAGE #1 (no MESSAGE #2)  
-- NO generic templates or placeholders
-- Follow the exact LinkedIn DM template with research-based personalization"""
+PROSPECT 1: [Full Name] at [Company]
+SUBJECT: Your AI initiatives at [Company]
+MESSAGE #1:
+Hi [FirstName], I sincerely relate seeing [Company]'s work on [USE THEIR SPECIFIC AI INITIATIVES FROM RESEARCH]. Are you working on [USE THEIR SPECIFIC AI PROJECT FROM RESEARCH] and is scaling this project or [USE THEIR SPECIFIC CHALLENGES FROM RESEARCH] some key interests? Mastercard, CVS, Merck, NVIDIA, Comcast, and Synopsys are already in production with this and seeing measurable GenAI ROI with us. Can we have a short intro chat (Phone call/Zoom - your choice), and see if we really bring any value?
+
+[Repeat for PROSPECT 2, PROSPECT 3, etc. with THEIR SPECIFIC research data]
+
+VERIFICATION: You must generate {len(research_results)} different messages total."""
 
         try:
             # Get email prompt (either from template or fallback)
@@ -321,7 +340,7 @@ CRITICAL:
                 ],
                 model=self.config.reasoning_model,
                 reasoning_effort="high",  # TrueFoundry supports: low, medium, high
-                max_completion_tokens=8000,  # High but realistic token limit
+                max_completion_tokens=16000,  # Increased for detailed research responses
                 temperature=0.1,   # Low temperature for more focused reasoning
                 stream=False,
                 timeout=self.config.timeout_seconds,
@@ -331,10 +350,25 @@ CRITICAL:
                 }
             )
             
+            # Debug logging
+            logger.info(f"Email API call completed successfully")
+            if not response.choices:
+                logger.error("No choices in email API response")
+                raise Exception("No choices returned from email LLM API")
+            
             email_content = response.choices[0].message.content
+            logger.info(f"Email response length: {len(email_content) if email_content else 0}")
+            logger.info(f"Email response preview: {email_content[:500] if email_content else 'None'}")
+            
+            if not email_content:
+                logger.error("Empty email response content")
+                raise Exception("Empty response content from email LLM call")
+            
             from parsing_utils import LLMResponseParser
             parser = LLMResponseParser()
-            return parser.parse_email_response(email_content, research_results)
+            parsed_emails = parser.parse_email_response(email_content, research_results)
+            logger.info(f"Parsed {len(parsed_emails)} email results")
+            return parsed_emails
             
         except Exception as e:
             if "timeout" in str(e).lower():
@@ -354,19 +388,21 @@ CRITICAL:
     def _research_to_input_string(self, research_results: List[ResearchOutput]) -> str:
         """Convert research results to structured input for email generation"""
         output = ""
-        for result in research_results:
+        for i, result in enumerate(research_results, 1):
             output += f"""
-PROSPECT: {result.person_name} at {result.company_name}
-GENERAL REPORT: {result.general_report}
-AI/ML INITIATIVES: {result.ai_ml_initiatives}
-KEY CHALLENGES: {result.key_challenges_solving}
-HOW TRUEFOUNDRY CAN HELP: {result.how_truefoundry_can_help}
-PERSONAL DETAILS: {result.personal_details}
-ON-PREM PROVIDERS: {result.technical_deployment_on_prem_provider}
-CLOUD PROVIDERS: {result.technical_deployment_cloud_providers}
-RECENT AI POSTS: {result.recent_ai_posts_comments_90_days}
-EXECUTIVE URGENCY: {result.executive_urgency_earnings_board_mentions}
-COMPETITIVE STACK: {result.competitive_stack_usage_rival_vendors}
+PROSPECT {i}: {result.person_name} at {result.company_name}
+
+RESEARCH DATA:
+- First Name: {result.person_name.split()[0]}
+- Company: {result.company_name}
+- LinkedIn: {result.linkedin_url}
+- Company AI Initiatives: {result.ai_ml_initiatives}
+- Person's Specific AI Project: {result.general_report}
+- Person's Key Challenges: {result.key_challenges_solving}
+- Technical Stack: On-Prem: {result.technical_deployment_on_prem_provider}, Cloud: {result.technical_deployment_cloud_providers}
+- How TrueFoundry Helps: {result.how_truefoundry_can_help}
+
+CRITICAL: Use THIS SPECIFIC research data above to personalize the LinkedIn DM for {result.person_name}. Each message must be unique based on their specific AI initiatives and challenges.
 
 ---
 """
